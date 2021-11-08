@@ -6,22 +6,22 @@
     {
       "CharCode": "GBR",
       "Name": "",
-      "Value": "43,8254"
+      "Value": "43.8254"
     },
     {
       "CharCode": "USD",
       "Name": "",
-      "Value": "30,9436"
+      "Value": "30.9436"
     },
     {
       "CharCode": "JPY",
       "Name": "Японских иен",
-      "Value": "23,1527"
+      "Value": "23.1527"
     },
     {
       "CharCode": "EUR",
       "Name": "ЕВРО",
-      "Value": ""
+      "Value": "1.56"
     }
   ]
 }
