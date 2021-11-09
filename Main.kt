@@ -3,6 +3,7 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.net.URL
 
+
 suspend fun main(args: Array<String>)= coroutineScope  {
     val cor = launch(Dispatchers.Default){
         val jsonFromCenterBank = Gson().fromJson(URL("https://www.cbr-xml-daily.ru/daily_json.js").readText(), CurrenciesAPI::class.java)
