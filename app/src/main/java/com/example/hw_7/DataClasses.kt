@@ -14,12 +14,3 @@ data class CurrencyPropertiesAPI (@SerializedName("ID") val id: String? = null,
                                   @SerializedName("Name") val name: String? = null,
                                   @SerializedName("Value") val value: String? = null,
                                   @SerializedName("Previous") val previous: String? = null)
-
-data class CurrenciesHomeWork (@SerializedName("squadName") val squadName: String? = "Exchange rate",
-                               @SerializedName("Date") var date: String? = null,
-                               @SerializedName("Country") val country: String? = "Russian",
-                               @SerializedName("Currency list") val currency_list: MutableList<CurrencyProperties> = mutableListOf(CurrencyProperties()))
-
-data class CurrencyProperties (@SerializedName("CharCode") var charCode: String? = null,
-                               @SerializedName("Name") var name: String? = null,
-                               @SerializedName("Value") var value: String? = null)

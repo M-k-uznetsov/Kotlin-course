@@ -1,25 +1,18 @@
 package com.example.hw_7
 
 import CurrenciesAPI
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -27,87 +20,72 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.URL
 import androidx.navigation.NavController
-@Composable
-fun JsonList(navController:NavController,view: MyViewModel) {
-    view.loadJson()
-    Column() {
-        view.jsonFromCenterBank.observe(this, Observer{
-            it.currency?.forEach {
-                Text(it.value.name.toString())
-            }
-        })
-        
-    }
-}
-
 class MyViewModel : ViewModel() {
     val jsonFromCenterBank: MutableLiveData<CurrenciesAPI> by lazy {
         MutableLiveData<CurrenciesAPI>()
     }
+    init {
+        loadJson()
+    }
+
 
     fun loadJson() {
         viewModelScope.launch(Dispatchers.Default) {
-            jsonFromCenterBank.value = Gson().fromJson(
+            jsonFromCenterBank.postValue(Gson().fromJson(
                 URL("https://www.cbr-xml-daily.ru/daily_json.js").readText(),
                 CurrenciesAPI::class.java
-            )
+            ))
         }
     }
 }
+
 @Composable
-fun MainScreen(navController:NavController) {
+fun JsonList(navController:NavController,view: MyViewModel) {
+    val jsonData: CurrenciesAPI? by view.jsonFromCenterBank.observeAsState()
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF5C5CFF))
             .horizontalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState())
 
     ) {
         Column {
-            Text(text = "Myface.com\n", fontSize = 60.sp, color = Color.White)
-            val username = remember { mutableStateOf("") }
-            InputField(name = "username", inputString = username)
-            val password = remember { mutableStateOf("") }
-            InputField(name = "password", inputString = password)
-            val result: MutableState<Boolean?> = remember { mutableStateOf(null) }
-            Button(onClick = {
-                result.value = password.value == "admin" && username.value == "admin"
-
-            }) {
-                Text("confirm", fontSize = 25.sp)
-            }
-            if (result.value == true) {
-                Text("data entry was successful", fontSize = 25.sp, color = Color.Green)
-                navController.navigate("JsonList")
-            }
-            if (result.value == false) {
-                Text(
-                    "data entry error check username or password",
-                    fontSize = 25.sp,
-                    color = Color.Red
-                )
+            jsonData?.currency?.values?.forEach() {
+                it.name?.let { it1 ->
+                    Text(it1, fontSize = 25.sp,
+                        modifier = Modifier.clickable(onClick = {
+                            navController.navigate(route ="fullData/${it.charCode}")
+                        })
+                    )
+                }
             }
         }
     }
 }
-@Composable
-fun InputField(name: String, inputString:MutableState<String>) {
-    OutlinedTextField(
-        inputString.value,
-        {
-            inputString.value = it
-        },
-        singleLine= true,
-        modifier= Modifier
-            //.horizontalScroll(rememberScrollState())
-            .fillMaxWidth(),
-        placeholder = { Text("Input $name!",fontSize=20.sp,color= Color.White)},
-        textStyle = TextStyle(fontSize =  28.sp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor= Color.White,
-            unfocusedBorderColor = Color.Black
-        )
 
-    )
+@Composable
+fun FullData(key:String,view: MyViewModel){
+    val jsonData: CurrenciesAPI? by view.jsonFromCenterBank.observeAsState()
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF5C5CFF))
+            .horizontalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState())
+
+    ) {
+        Column {
+            val result = jsonData?.currency?.get(key)
+            result?.name?.let { Text("name: $it",fontSize = 25.sp) }
+            result?.charCode?.let { Text("charCode: $it",fontSize = 25.sp) }
+            result?.id?.let { Text("id: $it",fontSize = 25.sp) }
+            result?.nominal?.let { Text("nominal: $it",fontSize = 25.sp) }
+            result?.numCode?.let { Text("numCode: $it",fontSize = 25.sp) }
+            result?.value?.let { Text("value: $it",fontSize = 25.sp) }
+        }
+    }
+
 }
