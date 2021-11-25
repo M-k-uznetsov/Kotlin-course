@@ -12,36 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.URL
 import androidx.navigation.NavController
-class MyViewModel : ViewModel() {
-    val jsonFromCenterBank: MutableLiveData<CurrenciesAPI> by lazy {
-        MutableLiveData<CurrenciesAPI>()
-    }
-    init {
-        loadJson()
-    }
-
-
-    fun loadJson() {
-        viewModelScope.launch(Dispatchers.Default) {
-            jsonFromCenterBank.postValue(Gson().fromJson(
-                URL("https://www.cbr-xml-daily.ru/daily_json.js").readText(),
-                CurrenciesAPI::class.java
-            ))
-        }
-    }
-}
 
 @Composable
 fun JsonList(navController:NavController,view: MyViewModel) {
-    val jsonData: CurrenciesAPI? by view.jsonFromCenterBank.observeAsState()
+    val jsonData = view.jsonFromCenterBank.observeAsState()
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -52,7 +27,7 @@ fun JsonList(navController:NavController,view: MyViewModel) {
 
     ) {
         Column {
-            jsonData?.currency?.values?.forEach() {
+            jsonData.value?.currency?.values?.forEach() {
                 it.name?.let { it1 ->
                     Text(it1, fontSize = 25.sp,
                         modifier = Modifier.clickable(onClick = {

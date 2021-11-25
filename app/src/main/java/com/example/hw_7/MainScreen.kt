@@ -39,13 +39,14 @@ fun MainScreen(navController: NavController) {
             val result: MutableState<Boolean?> = remember { mutableStateOf(null) }
             Button(onClick = {
                 result.value = password.value == "admin" && username.value == "admin"
-
+                if (result.value == true) {
+                    navController.navigate("JsonList")
+                }
             }) {
                 Text("confirm", fontSize = 25.sp)
             }
             if (result.value == true) {
                 Text("data entry was successful", fontSize = 25.sp, color = Color.Green)
-                navController.navigate("JsonList")
             }
             if (result.value == false) {
                 Text(
