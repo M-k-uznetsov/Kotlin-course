@@ -69,8 +69,3 @@ fun EnablePermissionUI(
         }
     }
 }
-
-
-
-
-

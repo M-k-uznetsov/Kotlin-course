@@ -23,7 +23,7 @@ import java.util.*
 
 @Composable
 fun JsonList(navController:NavController,view: MyViewModel) {
-    val jsonData = view.jsonFromCenterBank.observeAsState()
+    val jsonData = view.movieList.observeAsState()
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -33,8 +33,8 @@ fun JsonList(navController:NavController,view: MyViewModel) {
 
     ) {
         Column{
-
-            jsonData.value?.currency?.values?.forEach() {
+            jsonData.value?.get(0)?.currency?.values?.forEach()
+            {
                 it.name?.let { it1 ->
                     Text(it1, fontSize = 25.sp,
                         modifier = Modifier.clickable(onClick = {
@@ -51,7 +51,7 @@ fun JsonList(navController:NavController,view: MyViewModel) {
 
 @Composable
 fun FullData(key:String,view: MyViewModel){
-    val jsonData: CurrenciesAPI? by view.jsonFromCenterBank.observeAsState()
+    val jsonData = view.movieList.observeAsState()
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -63,7 +63,7 @@ fun FullData(key:String,view: MyViewModel){
 
     ) {
         Column {
-            val result = jsonData?.currency?.get(key)
+            val result = jsonData.value?.get(0)?.currency?.get(key)
             result?.name?.let { Text("name: $it",fontSize = 25.sp) }
             result?.charCode?.let { Text("charCode: $it",fontSize = 25.sp) }
             result?.id?.let { Text("id: $it",fontSize = 25.sp) }
@@ -72,7 +72,6 @@ fun FullData(key:String,view: MyViewModel){
             result?.value?.let { Text("value: $it",fontSize = 25.sp) }
         }
     }
-
 }
 
 

@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.example.hw9.permission.DefaultSnackBar
@@ -26,16 +28,12 @@ import com.google.android.gms.location.LocationServices
 import java.util.*
 
 
-
-
-
-
 @Composable fun UserRegionScreen(navController: NavController,view: MyViewModel) {
 
     val context = LocalContext.current
-    var currency = myFun(context)
+    var currency = remember{mutableStateOf(myFun(context))}
+    val jsonData =view.movieList.observeAsState()
 
-    val jsonData = view.jsonFromCenterBank.observeAsState()
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -45,18 +43,18 @@ import java.util.*
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "This will be user region", fontSize = 60.sp, color = Color.White)
-            val result = jsonData.value?.currency?.get(currency.toString())
+            val result = jsonData.value?.get(0)?.currency?.get(currency.value.toString())
             result?.name?.let { Text("name: $it",fontSize = 30.sp,color=Color.White) }
             result?.charCode?.let { Text("charCode: $it",fontSize = 25.sp,color=Color.White) }
             result?.id?.let { Text("id: $it",fontSize = 25.sp,color=Color.White) }
             result?.nominal?.let { Text("nominal: $it",fontSize = 25.sp,color=Color.White) }
             result?.numCode?.let { Text("numCode: $it",fontSize = 25.sp,color=Color.White) }
             result?.value?.let { Text("value: $it",fontSize = 25.sp,color=Color.White) }
-            Text("latitude: ${currency.toString()}", fontSize = 25.sp, color = Color.White)
+            Text("latitude: ${currency.value.toString()}", fontSize = 25.sp, color = Color.White)
 
             Button(onClick = {
-                //navController.navigate("JsonList")
-                currency = myFun(context)
+                navController.navigate("JsonList")
+                currency.value = myFun(context)
             }) {
                 Text("see more values", fontSize = 25.sp)
 
@@ -98,14 +96,20 @@ fun myFun(context: Context): Currency {
 
     }
     var region = "NO"
+    fun coordinates(latitude:Double,longitude:Double){
+        Log.d("testt", "before update: $region")
+        region=getAddress(latitude, longitude)
+        Log.d("testt", "after update: $region")
+    }
+
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
     fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
-        if (location != null) {
-            Log.d("testt", "before update: $region")
-            region=getAddress(location.latitude, location.longitude)
-            Log.d("testt", "after update: $region")
-        }
+     if(location!=null){
+
+         coordinates(location.latitude,location.longitude)
+         //ERROR: coordinates are not saved
+     }
     }
     Log.d("testt", "after Task<Location>: $region")
     return Currency.getInstance(Locale("", region))

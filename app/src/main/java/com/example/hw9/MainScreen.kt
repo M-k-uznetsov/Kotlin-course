@@ -29,7 +29,7 @@ import java.util.*
 @Composable
 fun MainScreen(navController: NavController,view: MyViewModel) {
     val context = LocalContext.current
-    val jsonData = view.jsonFromCenterBank.observeAsState()
+    val jsonData = view.movieList.observeAsState()
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -54,7 +54,7 @@ fun MainScreen(navController: NavController,view: MyViewModel) {
                     mTimer.scheduleAtFixedRate(object : TimerTask() {
                         override fun run() {
                             counter+=1
-                            intent.putExtra("jsonData", jsonData.value);
+                            intent.putExtra("jsonData", jsonData.value?.get(0));
                             Log.d("TIMER","repeat: $counter")
                             context.startService(intent)
                             context.stopService(intent)
