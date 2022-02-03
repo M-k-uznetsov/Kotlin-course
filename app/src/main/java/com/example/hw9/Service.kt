@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
-import java.lang.Boolean.TRUE
 import java.net.URL
 
 private const val TAG = "MyIntentService"
@@ -27,12 +26,11 @@ class UpdateJsonService : IntentService("MyIntentService") {
         val data: CurrenciesAPI? = Gson().fromJson(
             URL("https://www.cbr-xml-daily.ru/daily_json.js").readText(),
             CurrenciesAPI::class.java)
-        if(TRUE ) {
+        if(jsonFromActivity?.date != data?.date ) {
             val channel = NotificationChannel("123445596", "123445596", NotificationManager.IMPORTANCE_DEFAULT)
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
 
-            //NotificationChannel("123445596", "123445596", NotificationManager.IMPORTANCE_DEFAULT)
             val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
             val builder = NotificationCompat.Builder(this, "123445596")
                 .setSmallIcon(R.drawable.notification_icon)

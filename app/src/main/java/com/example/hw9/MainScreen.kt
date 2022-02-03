@@ -3,10 +3,7 @@ package com.example.hw9
 import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -21,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import java.util.*
@@ -38,7 +36,7 @@ fun MainScreen(navController: NavController,view: MyViewModel) {
 
     ) {
         Column {
-            Text(text = "Valute from CBR\n", fontSize = 60.sp, color = Color.White)
+            Text(text = "Valute from CBR\n", fontSize = 40.sp, color = Color.White,modifier = Modifier.padding(30.dp))
             val username = remember { mutableStateOf("") }
             InputField(name = "username", inputString = username)
             val password = remember { mutableStateOf("") }
@@ -54,7 +52,7 @@ fun MainScreen(navController: NavController,view: MyViewModel) {
                     mTimer.scheduleAtFixedRate(object : TimerTask() {
                         override fun run() {
                             counter+=1
-                            intent.putExtra("jsonData", jsonData.value?.get(0));
+                            intent.putExtra("jsonData", jsonData.value);
                             Log.d("TIMER","repeat: $counter")
                             context.startService(intent)
                             context.stopService(intent)

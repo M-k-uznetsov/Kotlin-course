@@ -1,6 +1,7 @@
 package com.example.hw9.permission
 
 import android.Manifest
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hw9.permission.PermissionAction
 import com.example.hw9.permission.PermissionUI
 import com.example.hw9.permission.PermissionViewModel
@@ -46,9 +50,8 @@ fun EnablePermissionUI(
                     }
                 }
                 is PermissionAction.OnPermissionDenied -> {
-                    permissionViewModel.setPerformLocationAction(false)
+                    permissionViewModel.setPerformLocationAction(true)
                     scope.launch {
-
                         scaffoldState.snackbarHostState.showSnackbar("Location Permission Denied!")
                     }
                 }
@@ -63,9 +66,10 @@ fun EnablePermissionUI(
         Button(
             onClick = {
                 permissionViewModel.setPerformLocationAction(true)
-            }
+            },
+            border = BorderStroke(1.dp, Color.White)
         ) {
-            Text(text = "Enable Location")
+            Text(text = "Enable Location ",fontSize = 25.sp, textAlign = TextAlign.Center)
         }
     }
 }
